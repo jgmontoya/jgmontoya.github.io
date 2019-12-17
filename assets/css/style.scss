@@ -1,0 +1,18 @@
+---
+---
+
+@import 'jekyll-theme-hacker';
+
+table {
+  text-align: center;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table td,th {
+  border: 1px solid white;
+}
+
+.btn-twitter span.icon {
+  background: url('../images/twitter_icon.svg') 0 0 no-repeat;
+}
