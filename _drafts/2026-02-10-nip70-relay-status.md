@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "The State of NIP-70: Why We're Rolling Back Protected Events in Marmot"
+title: "The State of NIP-70: Why We're Rolling Back Protected Events in White Noise"
 ---
 
-At WhiteNoise, we're building secure, private messaging on top of the Marmot protocol (which combines Nostr and **MLS (Messaging Layer Security)**). A fundamental building block of MLS is the **KeyPackage**, a pre-published bundle containing a public `init_key` that allows other users to add you to a group asynchronously.
+At White Noise, we're building secure, private messaging on top of the Marmot protocol which combines Nostr and **MLS (Messaging Layer Security)**. A fundamental building block of MLS is the **KeyPackage**, a pre-published bundle containing a public `init_key` that allows other users to add you to a group asynchronously. Critically, this is done in a way that preserves privacy: external observers (including relays) cannot determine which groups a user has joined or who they're communicating with.
 
 **Why does this matter for security?**
 From a cryptographic perspective, KeyPackages are a liability. If the private counterpart to an `init_key` sits on a device for too long, it increases the risk of a "harvest now, decrypt later" attack. If an attacker records your encrypted "Welcome" messages today and steals your private keys years from now, they could decrypt your past group joins.
@@ -35,7 +35,7 @@ The source code for our investigation tool is here: [marmot-protocol/mdk (branch
 
 ### What We Found
 
-The results highlighted a gap between our expectations and the spec's design. NIP-70 explicitly states that **the default relay behavior MUST be to reject protected events**. Supporting them via AUTH is opt-in for relay operators. When we tested major public relays (including Damus, Primal, and nos.lol), they were following this default behavior exactly:
+The results were disappointing. While NIP-70 allows relays to reject protected events by default, it also provides a clear path forward: implement AUTH and accept writes from verified authors. When we tested major public relays (including Damus, Primal, and nos.lol), **none of them had taken that step**:
 
 1. **Rejection without Recourse:** The relays rejected the events with messages like `blocked: event marked as protected`.
 2. **No Auth Challenge:** Crucially, _none_ of these relays initiated the NIP-42 `AUTH` flow. They simply followed the spec's default: reject outright.
@@ -44,26 +44,26 @@ Without the `AUTH` challenge, the client has no way to prove it is the owner of 
 
 ### The "Do Nothing" Solution
 
-This leaves us in a difficult position. We want to protect user data, but the relay ecosystem doesn't support the standard mechanism for doing so.
+This is frustrating. The protocol provides the tools for secure key lifecycle management: NIP-70 for protection, NIP-42 for authentication. But without relay support, those tools are useless. We're left choosing between **security features that don't work** and **no security features at all**.
 
 As discussed in our [GitHub issue #168](https://github.com/marmot-protocol/mdk/issues/168), we are forced to disable NIP-70 protection by default in our reference implementation for now.
 
-While the **[Marmot Protocol Specification (MIP-00)](https://github.com/marmot-protocol/marmot/blob/master/00.md)** already treats the protected (`-`) tag as optional to allow for flexibility, the **Marmot DevKit (MDK)** previously enforced it by default to maximize security. We are now aligning the implementation with the reality of the relay ecosystem.
+While the **[Marmot Protocol Specification (MIP-00)](https://github.com/marmot-protocol/marmot/blob/master/00.md)** already treats the protected (`-`) tag as optional to allow for flexibility, the **Marmot Dev Kit (MDK)** previously enforced it by default to maximize security. We are now aligning the implementation with the reality of the relay ecosystem.
 
 This change is implemented in **[MDK Pull Request #173](https://github.com/marmot-protocol/mdk/pull/173)**. The standard `create_key_package_for_event` function in MDK now returns a `Vec<Tag>` without the protected tag. For users who still want to enable protection (perhaps on relays that support it), we’ve introduced `create_key_package_for_event_with_options`, which accepts a `protected` boolean flag.
 
 ![The State of NIP-70: Retreat](/assets/images/nip70-retreat.jpeg)
 
-It feels like a step backward, essentially removing protocol enforcement, but we can't build a reliable messaging protocol if users can't publish their key packages to the relays they actually use.
+Make no mistake: this is a step backward. We're removing a security feature because the ecosystem can't support it yet. But we can't build a reliable messaging protocol if users can't publish their key packages to the relays they actually use. Pragmatism wins, reluctantly.
 
 ## A Call to Action for Relay Operators
 
-We believe NIP-70 and NIP-42 together could enable important security properties for Nostr. Ephemeral data and user-controlled deletion are security features, not just nice-to-haves.
+NIP-70 and NIP-42 together **would** enable important security properties for Nostr, if relays implemented them. Ephemeral data and user-controlled deletion are security features, not nice-to-haves.
 
-The current spec makes AUTH support for protected events optional, and most relays have chosen the simpler path of outright rejection. We'd encourage relay operators to consider implementing the full AUTH flow:
+Right now, most relays have chosen the path of least resistance: reject protected events outright rather than implement AUTH. We'd like to see that change. We'd encourage relay operators to consider implementing the full AUTH flow:
 
 1. See a `protected` event.
 2. Send an `AUTH` challenge.
 3. Accept the write once the client proves ownership.
 
-Until broader adoption occurs, we have to build around the limitations of the current ecosystem. We're optimistic that as Nostr matures, more relays will see the value in supporting authenticated writes for protected events.
+Until that happens, we'll keep building around the limitations. But we shouldn't have to. **The protocol is ready. The relays aren't.**
