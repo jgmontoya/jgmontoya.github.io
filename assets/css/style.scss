@@ -16,3 +16,8 @@ table td,th {
 .btn-twitter span.icon {
   background: url('../images/twitter_icon.svg') 0 0 no-repeat;
 }
+
+.btn-nostr span.icon {
+  background: url('../images/nostr_icon.gif') 0 0 no-repeat;
+  background-size: contain;
+}
