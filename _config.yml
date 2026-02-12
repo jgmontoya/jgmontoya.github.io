@@ -17,7 +17,7 @@ title: J.G. Montoya S.
 author: jgmontoya
 email: hi@jgmontoya.com
 description: >- # this means to ignore newlines until "baseurl:"
-  I'm a Bitcoiner & Software Engineer
+  I'm a Software Engineer, interested in Bitcoin, Nostr, and other stuff.
 show_excerpts: false # set to true to show excerpts on the homepage
   #baseurl: "" # the subpath of your site, e.g. /blog
 #url: https://jgmontoya.github.io # the base hostname & protocol for your site, e.g. http://example.com
