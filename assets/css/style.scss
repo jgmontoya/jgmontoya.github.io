@@ -8,6 +8,23 @@
   margin: 0 auto;
 }
 
+.post img,
+.post pre {
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.post img {
+  max-width: min(90vw, 1000px);
+  height: auto;
+}
+
+.post pre {
+  box-sizing: border-box;
+  width: 90vw;
+  max-width: 1000px;
+}
+
 table {
   text-align: center;
   width: 100%;
