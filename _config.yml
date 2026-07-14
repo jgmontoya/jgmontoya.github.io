@@ -58,3 +58,9 @@ include:
 #   - vendor/ruby/
 
 future: true
+
+# Source material used to build posts. Keep it out of the published site.
+exclude:
+  - blog-handoff.md
+  - "Mensajería Privada en NOSTR_ de nip-04 a nip-ee.pdf"
+  - tmp
