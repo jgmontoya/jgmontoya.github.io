@@ -3,6 +3,11 @@
 
 @import 'jekyll-theme-hacker';
 
+.post {
+  max-width: 75ch;
+  margin: 0 auto;
+}
+
 table {
   text-align: center;
   width: 100%;

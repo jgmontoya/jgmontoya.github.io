@@ -31,7 +31,7 @@ My slides began with a simple observation: centralized service operators and inf
 
 With two people, each side can derive a shared secret. A group carries more state as members join and leave or keys change after a removal or compromise. Offline clients may fall behind and retain old key material. Honest current members have to converge on the same epoch, membership, and shared state.
 
-The problem becomes painful when a protocol encrypts the same message separately for every recipient. Ten people may be manageable. Ten thousand people expose the limits immediately.
+The problem becomes painful when a protocol encrypts the same message separately for every recipient. With 10,000 members, a per-recipient scheme needs roughly 10,000 separately encrypted wrappers for one group message.
 
 ## NIP-04: The Early Baseline
 
@@ -81,6 +81,8 @@ MLS supplies continuous group key agreement, message framing, and state transiti
 ## From NIP-EE to Marmot
 
 The 2025 design used Nostr public keys for identity and Nostr relays for delivery. MLS provided the shared group state. Marmot specified how those pieces fit together.
+
+At White Noise, I build Rust application code around Marmot, including persistence, relay synchronization, and APIs used by our mobile clients. I have reproduced and fixed delivery and convergence failures across those layers.
 
 ![The delivered slide describing MLS as the cryptographic foundation, Nostr as authentication and transport, and Marmot as their integration protocol](/assets/images/labitconf-mls-nostr-marmot.png)
 
