@@ -3,8 +3,6 @@ layout: post
 title: "Private Messaging on Nostr: From NIP-04 to Marmot"
 description: "How private messaging on Nostr evolved from NIP-04 and NIP-17 to MLS and the Marmot protocol."
 date: 2026-07-13
-permalink: /drafts/private-messaging-on-nostr-from-nip-04-to-marmot/
-draft: true
 ---
 
 > This article is based on a talk I gave at LABITCONF in Buenos Aires on November 8, 2025. It preserves the design I presented and explains how Marmot has changed since.
