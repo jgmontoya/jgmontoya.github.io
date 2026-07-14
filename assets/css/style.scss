@@ -3,26 +3,41 @@
 
 @import 'jekyll-theme-hacker';
 
+html {
+  background: #151515 url('../images/bkg.png') 0 0;
+  overscroll-behavior-y: none;
+}
+
 .post {
-  max-width: 75ch;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: min(75ch, 100%);
+  justify-content: center;
 }
 
-.post img,
-.post pre {
-  margin-left: 50%;
-  transform: translateX(-50%);
+.post > * {
+  min-width: 0;
 }
 
-.post img {
-  max-width: min(90vw, 1000px);
+.post > .highlighter-rouge,
+.post > p:has(> img:only-child) {
+  width: min(90vw, 1000px);
+  justify-self: center;
+}
+
+.post > p:has(> img:only-child) img {
+  display: block;
+  max-width: 100%;
   height: auto;
+  margin: 0 auto;
 }
 
 .post pre {
   box-sizing: border-box;
-  width: 90vw;
-  max-width: 1000px;
+  max-width: 100%;
+}
+
+.post :not(pre) > code {
+  overflow-wrap: anywhere;
 }
 
 table {
